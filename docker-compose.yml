@@ -2,12 +2,14 @@ services:
   postgres:
     image: postgres:16.9
     container_name: myblog-postgres
-    environment: # В реальном приложении все креды будут вынесены в env, здесь открыты только для упрощения сборки и вашего ревью
-      POSTGRES_DB: myblog
-      POSTGRES_USER: myblog_user
-      POSTGRES_PASSWORD: password
+    environment:
+      # В реальном приложении все креды будут вынесены в env или хранилище секретов,
+      # здесь проставлены дефолтные значения только для упрощения сборки и вашего ревью
+      POSTGRES_DB: ${POSTGRES_DB:-myblog}
+      POSTGRES_USER: ${POSTGRES_USER:-myblog_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
     ports:
-      - "15432:5432"
+      - "${POSTGRES_PORT:-15432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -19,15 +21,17 @@ services:
       dockerfile: Dockerfile
     container_name: myblog-app
     ports:
-      - "18080:8080"
+      - "${APP_PORT:-18080}:8080"
     depends_on:
       - postgres
-    environment: # В реальном приложении все креды будут вынесены в env, здесь открыты только для упрощения сборки и вашего ревью
+    environment:
+      # В реальном приложении все креды будут вынесены в env или хранилище секретов,
+      # здесь проставлены дефолтные значения только для упрощения сборки и вашего ревью
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_NAME=myblog
-      - DB_USER=myblog_user
-      - DB_PASSWORD=password
+      - DB_NAME=${POSTGRES_DB:-myblog}
+      - DB_USER=${POSTGRES_USER:-myblog_user}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-password}
     networks:
       - myblog-network
 
