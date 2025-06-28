@@ -4,7 +4,7 @@ services:
     container_name: myblog-postgres
     environment:
       # В реальном приложении все креды будут вынесены в env или хранилище секретов,
-      # здесь проставлены дефолтные значения только для упрощения сборки и вашего ревью
+      # здесь проставлены дефолтные значения только для упрощения локальной сборки и ревью
       POSTGRES_DB: ${POSTGRES_DB:-myblog}
       POSTGRES_USER: ${POSTGRES_USER:-myblog_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
@@ -26,7 +26,7 @@ services:
       - postgres
     environment:
       # В реальном приложении все креды будут вынесены в env или хранилище секретов,
-      # здесь проставлены дефолтные значения только для упрощения сборки и вашего ревью
+      # здесь проставлены дефолтные значения только для упрощения локальной сборки и ревью
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=${POSTGRES_DB:-myblog}
