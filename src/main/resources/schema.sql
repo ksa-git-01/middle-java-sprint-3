@@ -1,0 +1,35 @@
+CREATE TABLE IF NOT EXISTS post (
+  id BIGSERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  likes INTEGER DEFAULT 0,
+  full_image_url VARCHAR(500),
+  short_image_url VARCHAR(500),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tag (
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(25) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS comment (
+  id BIGSERIAL PRIMARY KEY,
+  post_id BIGINT REFERENCES post(id),
+  parent_id BIGINT REFERENCES comment(id),
+  content TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS post_tags (
+  id BIGSERIAL PRIMARY KEY,
+  post_id BIGINT REFERENCES post(id),
+  tag_id BIGINT REFERENCES tag(id)
+);
+
+INSERT INTO tag (name) VALUES ('Важное') ON CONFLICT (name) DO NOTHING;
+INSERT INTO tag (name) VALUES ('Путешествия') ON CONFLICT (name) DO NOTHING;
+INSERT INTO tag (name) VALUES ('Разработка') ON CONFLICT (name) DO NOTHING;
+INSERT INTO tag (name) VALUES ('Игры') ON CONFLICT (name) DO NOTHING;

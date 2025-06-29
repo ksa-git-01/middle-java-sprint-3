@@ -7,23 +7,19 @@
     <display-name>My blog Web Application</display-name>
 
     <servlet>
-        <!-- Имя и класс основного сервлета приложения-->
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-
-        <!-- Настройка Spring-контекста и Java-конфигурации -->
         <init-param>
             <param-name>contextClass</param-name>
             <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>ru.yandex.practicum.WebConfiguration</param-value>
+            <param-value>ru.yandex.practicum.configuration.WebConfiguration</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!-- DispatcherServlet обрабатывает все запросы -->
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/</url-pattern>

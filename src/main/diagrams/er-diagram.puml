@@ -27,7 +27,7 @@ entity Tag {
   * name : VARCHAR(25) <<UNIQUE>>
 }
 
-entity PostTagJoin {
+entity PostTags {
   * id : BIGINT <<PK>>
   --
   * post_id : BIGINT <<FK>>
@@ -37,8 +37,8 @@ entity PostTagJoin {
 }
 
 Post ||--o{ Comment : "has many"
-Post ||--o{ PostTagJoin : "has many"
-Tag ||--o{ PostTagJoin : "has many"
+Post ||--o{ PostTags : "has many"
+Tag ||--o{ PostTags : "has many"
 Comment ||--o{ Comment : "parent_id for replies"
 
 @enduml
