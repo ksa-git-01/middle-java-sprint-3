@@ -1,0 +1,42 @@
+@startuml
+entity Post {
+  * id : BIGINT <<PK>>
+  --
+  * title : VARCHAR(255)
+  * content : TEXT
+  likes : INTEGER DEFAULT 0
+  image_full_url : VARCHAR(500)
+  image_short_url : VARCHAR(500)
+  * created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity Comment {
+  * id : BIGINT <<PK>>
+  --
+  * post_id : BIGINT <<FK>>
+  parent_id : BIGINT <<FK>>
+  * content : TEXT
+  * created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
+
+entity Tag {
+  * id : BIGINT <<PK>>
+  --
+  * name : VARCHAR(25) <<UNIQUE>>
+}
+
+entity PostTagJoin {
+  * id : BIGINT <<PK>>
+  --
+  * post_id : BIGINT <<FK>>
+  * tag_id : BIGINT <<FK>>
+}
+
+Post ||--o{ Comment : "has many"
+Post ||--o{ PostTagJoin : "has many"
+Tag ||--o{ PostTagJoin : "has many"
+Comment ||--o{ Comment : "parent_id for replies"
+@enduml
+
