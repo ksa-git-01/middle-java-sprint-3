@@ -32,6 +32,8 @@ entity PostTagJoin {
   --
   * post_id : BIGINT <<FK>>
   * tag_id : BIGINT <<FK>>
+  --
+  <<UNIQUE(post_id, tag_id)>>
 }
 
 Post ||--o{ Comment : "has many"
