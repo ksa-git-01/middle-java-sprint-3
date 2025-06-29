@@ -40,5 +40,8 @@ Post ||--o{ Comment : "has many"
 Post ||--o{ PostTagJoin : "has many"
 Tag ||--o{ PostTagJoin : "has many"
 Comment ||--o{ Comment : "parent_id for replies"
+
 @enduml
+
+
 
