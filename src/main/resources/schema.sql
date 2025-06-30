@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS comment (
 CREATE TABLE IF NOT EXISTS post_tags (
   id BIGSERIAL PRIMARY KEY,
   post_id BIGINT REFERENCES post(id),
-  tag_id BIGINT REFERENCES tag(id)
+  tag_id BIGINT REFERENCES tag(id),
+  UNIQUE (post_id, tag_id)
 );
 
 INSERT INTO tag (name) VALUES ('Важное') ON CONFLICT (name) DO NOTHING;
