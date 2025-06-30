@@ -54,29 +54,28 @@
 </head>
 <body>
 <h1>Список постов</h1>
-<button class="btn-add" onclick="toggleForm()">Добавить пост</button>
-<table>
-    <thead>
-    <tr>
-        <th>Заголовок</th>
-        <th>Картинка</th>
-        <th>Краткое содержание</th>
-        <th>Комментарии</th>
-        <th>Лайки</th>
-        <th>Теги</th>
-    </tr>
-    </thead>
-    <tbody>
 
-    <tr th:each="post : ${posts}">
-        <td th:text="${post.title}"/>
-        <td th:text="${post.picture}"/>
-        <td th:text="${post.shortContent}"/>
-        <td th:text="${post.commentCount}"/>
-        <td th:text="${post.likeCount}"/>
-        <td th:text="${post.tags}"/>
-    </tr>
-    </tbody>
-</table>
+<div>
+    <button>Добавить пост</button>
+</div>
+
+<div>
+    <div th:each="post : ${posts}" style="border: 1px solid #ccc; margin: 20px 0; padding: 15px;">
+        <h3 th:text="${post.title}"></h3>
+        <div style="display: flex; margin: 10px 0;">
+            <img th:src="${post.imageUrl}"
+                 alt="Картинка поста"
+                 style="width: 150px; height: 100px; object-fit: cover; margin-right: 15px;">
+            <div th:text="${post.shortContent}" style="flex: 1;"></div>
+        </div>
+        <div style="margin: 10px 0;">
+            <span th:text="'Теги: ' + ${post.tags}"></span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+            <span th:text="${post.commentsCount} + ' комментариев'"></span>
+            <span th:text="${post.likesCount} + ' лайков'"></span>
+        </div>
+    </div>
+</div>
 </body>
 </html>
