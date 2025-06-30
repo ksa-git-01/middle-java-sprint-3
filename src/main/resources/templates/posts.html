@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Список постов</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .actions {
+            text-align: center;
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-add {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>Список постов</h1>
+<button class="btn-add" onclick="toggleForm()">Добавить пост</button>
+<table>
+    <thead>
+    <tr>
+        <th>Заголовок</th>
+        <th>Картинка</th>
+        <th>Краткое содержание</th>
+        <th>Комментарии</th>
+        <th>Лайки</th>
+        <th>Теги</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:each="post : ${posts}">
+        <td th:text="${post.title}"/>
+        <td th:text="${post.picture}"/>
+        <td th:text="${post.shortContent}"/>
+        <td th:text="${post.commentCount}"/>
+        <td th:text="${post.likeCount}"/>
+        <td th:text="${post.tags}"/>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
