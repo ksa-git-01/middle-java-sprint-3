@@ -1,6 +1,6 @@
 @startuml
 entity Post {
-  * id : BIGINT <<PK>>
+  * id : BIGSERIAL <<PK>>
   --
   * title : VARCHAR(255)
   * content : TEXT
@@ -12,7 +12,7 @@ entity Post {
 }
 
 entity Comment {
-  * id : BIGINT <<PK>>
+  * id : BIGSERIAL <<PK>>
   --
   * post_id : BIGINT <<FK>>
   parent_id : BIGINT <<FK>>
@@ -22,13 +22,13 @@ entity Comment {
 }
 
 entity Tag {
-  * id : BIGINT <<PK>>
+  * id : BIGSERIAL <<PK>>
   --
   * name : VARCHAR(25) <<UNIQUE>>
 }
 
 entity PostTags {
-  * id : BIGINT <<PK>>
+  * id : BIGSERIAL <<PK>>
   --
   * post_id : BIGINT <<FK>>
   * tag_id : BIGINT <<FK>>
