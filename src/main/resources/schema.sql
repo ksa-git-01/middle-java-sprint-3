@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS post (
   title VARCHAR(255) NOT NULL,
   content TEXT NOT NULL,
   likes INTEGER DEFAULT 0,
-  full_image_url VARCHAR(500),
-  short_image_url VARCHAR(500),
+  filename VARCHAR(500),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
 );
@@ -17,7 +16,6 @@ CREATE TABLE IF NOT EXISTS tag (
 CREATE TABLE IF NOT EXISTS comment (
   id BIGSERIAL PRIMARY KEY,
   post_id BIGINT REFERENCES post(id),
-  parent_id BIGINT REFERENCES comment(id),
   content TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP
