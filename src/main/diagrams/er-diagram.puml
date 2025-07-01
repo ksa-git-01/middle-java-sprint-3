@@ -5,8 +5,7 @@ entity Post {
   * title : VARCHAR(255)
   * content : TEXT
   likes : INTEGER DEFAULT 0
-  image_full_url : VARCHAR(500)
-  image_short_url : VARCHAR(500)
+  filename : VARCHAR(500)
   * created_at : TIMESTAMP
   updated_at : TIMESTAMP
 }
@@ -15,7 +14,6 @@ entity Comment {
   * id : BIGSERIAL <<PK>>
   --
   * post_id : BIGINT <<FK>>
-  parent_id : BIGINT <<FK>>
   * content : TEXT
   * created_at : TIMESTAMP
   updated_at : TIMESTAMP
@@ -39,7 +37,6 @@ entity PostTags {
 Post ||--o{ Comment : "has many"
 Post ||--o{ PostTags : "has many"
 Tag ||--o{ PostTags : "has many"
-Comment ||--o{ Comment : "parent_id for replies"
 
 @enduml
 
