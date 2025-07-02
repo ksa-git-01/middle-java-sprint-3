@@ -21,6 +21,7 @@ public class PostController {
     @GetMapping("/posts")
     public String getPosts(@RequestParam(name = "page", defaultValue = "0") int page,
                            @RequestParam(name = "size", defaultValue = "10") int size,
+                           @RequestParam(name = "tag", required = false) String tag,
                            Model model) {
         if (page < 0) {
             page = 0;
@@ -28,11 +29,12 @@ public class PostController {
         if (!Set.of(10, 20, 50).contains(size)) {
             size = 10;
         }
-        List<PostListItemDto> postListItems = service.getPostListItems(page, size);
+        List<PostListItemDto> postListItems = service.getPostListItems(page, size, tag);
 
         model.addAttribute("posts", postListItems);
         model.addAttribute("page", page);
         model.addAttribute("size", size);
+        model.addAttribute("tag", tag);
         return "posts";
     }
 }

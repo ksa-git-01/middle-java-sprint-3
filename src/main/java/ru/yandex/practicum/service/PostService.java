@@ -24,9 +24,9 @@ public class PostService {
         this.commentDao = commentDao;
     }
 
-    public List<PostListItemDto> getPostListItems(Integer page, Integer size) {
+    public List<PostListItemDto> getPostListItems(Integer page, Integer size, String tag) {
         List<PostListItemDto> postListItems = new ArrayList<>();
-        List<Post> posts = postDao.findAllWithPagination(page, size);
+        List<Post> posts = findPosts(page, size, tag);
         if (posts.isEmpty()) {
             return postListItems;
         }
@@ -41,6 +41,14 @@ public class PostService {
         return posts.stream()
                 .map(post -> mapToPostListItemDto(post, tagsByPostId, commentCountByPostId))
                 .toList();
+    }
+
+    private List<Post> findPosts(Integer page, Integer size, String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            return postDao.findAllByTagWithPagination(page, size, tag.trim());
+        } else {
+            return postDao.findAllWithPagination(page, size);
+        }
     }
 
     private PostListItemDto mapToPostListItemDto(Post post,
