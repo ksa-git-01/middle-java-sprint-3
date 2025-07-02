@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Динамический заголовок страницы - название поста -->
+    <title th:text="${post.title}">Просмотр поста</title>
+
+    <style>
+        /* Базовые стили - общие для всего приложения */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* Контейнер для центрирования контента */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Стили заголовков */
+        h1 {
+            text-align: center;
+        }
+
+        /* Стили таблиц - наследуются из общих стилей приложения */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        /* Центрирование для элементов действий */
+        .actions {
+            text-align: center;
+        }
+
+        /* Стили для контейнеров форм */
+        .form-container {
+            margin-top: 20px;
+        }
+
+        /* Стили для меток форм */
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Стили для полей ввода */
+        input[type="text"], input[type="number"], input[type="checkbox"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        /* Базовые стили кнопок */
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        /* Стиль для кнопки добавления */
+        .btn-add {
+            margin-bottom: 20px;
+        }
+
+
+
+        /* Плейсхолдер для отсутствующего изображения */
+        .post-no-image-content {
+            width: 100%;
+            max-width: 150px;
+            height: 100px;
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        /* Ссылка для возврата к списку постов */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Контейнер для содержимого поста */
+        .post-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Заголовок поста - увеличенный размер для акцента */
+        .post-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Полноразмерное изображение поста */
+        .post-image-full {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* Содержимое поста с сохранением переносов строк */
+        .post-content {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* Контейнер для тегов поста */
+        .post-tags {
+            margin-bottom: 20px;
+        }
+
+        /* Контейнер для кнопок действий с постом */
+        .post-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Кнопка редактирования поста - в стиле кнопки добавления комментария */
+        .btn-edit {
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .btn-edit:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* Кнопка удаления поста */
+        .btn-delete {
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .btn-delete:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* Кнопка лайка */
+        .btn-like {
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .btn-like:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* Счетчик лайков */
+        .likes-display {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        /* === СТИЛИ ДЛЯ СЕКЦИИ КОММЕНТАРИЕВ === */
+
+        /* Основной контейнер комментариев */
+        .comments-section {
+            border-top: 2px solid #ccc;
+            padding-top: 20px;
+        }
+
+        /* Шапка секции комментариев с заголовком и кнопкой добавления */
+        .comments-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .comments-header h3 {
+            margin: 0;
+        }
+
+        /* Форма добавления нового комментария - скрыта по умолчанию */
+        .add-comment-form {
+            margin-bottom: 20px;
+            display: none;
+            border: 1px solid #ccc;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        /* Поле ввода текста комментария */
+        .comment-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        /* Контейнер для кнопок формы комментария */
+        .comment-form-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Кнопка сохранения */
+        .btn-save {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+
+        .btn-save:hover {
+            background-color: #218838;
+        }
+
+        /* Кнопка отмены */
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        /* Контейнер отдельного комментария */
+        .comment {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+
+        /* Содержимое комментария */
+        .comment-content {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        /* Контейнер для кнопок действий с комментарием */
+        .comment-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Маленькие кнопки для действий с комментариями */
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        /* Кнопки редактирования и удаления комментария - в стиле кнопки добавления комментария */
+        .btn-edit-comment,
+        .btn-delete-comment {
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .btn-edit-comment:hover,
+        .btn-delete-comment:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* Текстовое поле для редактирования комментария */
+        .edit-textarea {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Ссылка для возврата к списку постов -->
+    <a href="/posts" class="back-link">← Назад к ленте постов</a>
+
+    <!-- Основной контейнер поста -->
+    <div class="post-container">
+        <!-- Заголовок поста из модели -->
+        <h1 class="post-title" th:text="${post.title}">Заголовок поста</h1>
+
+        <!-- Изображение поста или плейсхолдер -->
+        <div class="post-image-container">
+            <img class="post-image-full"
+                 th:if="${post.filename != null and !post.filename.isEmpty()}"
+                 th:src="@{'/images/' + ${post.filename}}"
+                 th:alt="${post.title}">
+            <div class="post-no-image-content"
+                 th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
+                <span>Нет изображения</span>
+            </div>
+        </div>
+
+        <!-- Содержимое поста - с сохранением переносов строк -->
+        <div class="post-content" th:text="${post.content}">
+            Содержимое поста
+        </div>
+
+        <!-- Теги поста - простой текст через запятую -->
+        <div class="post-tags" th:if="${not #lists.isEmpty(post.tags)}">
+            <strong>Теги: </strong>
+            <span th:text="${#strings.arrayJoin(post.tags.![name].toArray(), ', ')}">тег1, тег2, тег3</span>
+        </div>
+
+        <!-- Отображение количества лайков -->
+        <div class="likes-display">
+            <strong>Количество лайков: <span th:text="${post.likes}">0</span></strong>
+        </div>
+
+        <!-- Кнопки действий с постом -->
+        <div class="post-actions">
+            <!-- Ссылка на редактирование поста -->
+            <a th:href="@{'/posts/' + ${post.id} + '/edit'}" class="btn-edit">Редактировать</a>
+            <!-- Кнопка удаления с подтверждением -->
+            <button class="btn-delete" onclick="deletePost()" th:data-post-id="${post.id}">Удалить</button>
+            <!-- Кнопка лайка -->
+            <button class="btn-like" onclick="likePost()" th:data-post-id="${post.id}">👍 Лайк</button>
+        </div>
+    </div>
+
+    <!-- Секция комментариев -->
+    <div class="comments-section">
+        <!-- Шапка с заголовком и счетчиком комментариев -->
+        <div class="comments-header">
+            <h3>Комментарии (<span th:text="${#lists.size(comments)}">0</span>)</h3>
+            <!-- Кнопка для показа/скрытия формы добавления комментария -->
+            <button onclick="toggleAddCommentForm()">Добавить комментарий</button>
+        </div>
+
+        <!-- Форма добавления комментария - скрыта по умолчанию -->
+        <form class="add-comment-form" id="addCommentForm">
+            <!-- Текстовое поле для ввода комментария -->
+            <textarea class="comment-textarea" placeholder="Напишите комментарий..." required></textarea>
+            <!-- Кнопки управления формой -->
+            <div class="comment-form-actions">
+                <button type="submit" class="btn-save">Сохранить</button>
+                <button type="button" class="btn-cancel" onclick="toggleAddCommentForm()">Отмена</button>
+            </div>
+            <!-- Подсказка о горячей клавише -->
+            <small>Нажмите Ctrl+Enter для быстрого сохранения</small>
+        </form>
+
+        <!-- Список существующих комментариев -->
+        <div class="comments-list">
+            <!-- Итерация по комментариям из модели -->
+            <div class="comment" th:each="comment : ${comments}">
+                <!-- Содержимое комментария с data-атрибутом для редактирования -->
+                <div class="comment-content" th:data-comment-id="${comment.id}">
+                    <p th:text="${comment.content}">Текст комментария</p>
+                </div>
+                <!-- Кнопки действий с комментарием -->
+                <div class="comment-actions">
+                    <!-- Кнопка редактирования inline -->
+                    <button class="btn-small btn-edit-comment"
+                            onclick="editComment(this)"
+                            th:data-comment-id="${comment.id}">Редактировать
+                    </button>
+                    <!-- Кнопка удаления с подтверждением -->
+                    <button class="btn-small btn-delete-comment"
+                            onclick="deleteComment(this)"
+                            th:data-comment-id="${comment.id}">Удалить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Функция переключения видимости формы добавления комментария
+    function toggleAddCommentForm() {
+        const form = document.getElementById('addCommentForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        // Автофокус на поле ввода при показе формы
+        if (form.style.display === 'block') {
+            form.querySelector('textarea').focus();
+        }
+    }
+
+    // Обработчик отправки формы добавления комментария
+    document.getElementById('addCommentForm').addEventListener('submit', function(e) {
+        e.preventDefault(); // Предотвращаем стандартную отправку формы
+        const textarea = this.querySelector('textarea');
+        const content = textarea.value.trim();
+
+        if (content) {
+            addComment(content);
+        }
+    });
+
+    // Обработчик горячей клавиши Ctrl+Enter для быстрого сохранения
+    document.querySelector('.add-comment-form textarea').addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('addCommentForm').dispatchEvent(new Event('submit'));
+        }
+    });
+
+    // AJAX запрос для добавления нового комментария
+    function addComment(content) {
+        // Извлекаем ID поста из URL
+        const postId = window.location.pathname.split('/')[2];
+
+        fetch(`/posts/${postId}/comment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content: content })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Перезагружаем страницу для обновления списка
+            } else {
+                alert('Ошибка при добавлении комментария');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при добавлении комментария');
+        });
+    }
+
+    // Функция перехода комментария в режим редактирования inline
+    function editComment(button) {
+        const commentId = button.dataset.commentId;
+        const contentDiv = button.closest('.comment').querySelector('.comment-content');
+        const currentText = contentDiv.querySelector('p').textContent;
+
+        // Заменяем содержимое на форму редактирования
+        contentDiv.innerHTML = `
+            <textarea class="comment-textarea edit-textarea">${currentText}</textarea>
+            <div class="comment-form-actions">
+                <button class="btn-small btn-save" onclick="saveComment(${commentId}, this)">Сохранить</button>
+                <button class="btn-small btn-cancel" onclick="cancelEditComment(${commentId}, '${currentText.replace(/'/g, "\\'")}', this)">Отмена</button>
+            </div>
+            <small>Нажмите Ctrl+Enter для сохранения</small>
+        `;
+
+        const textarea = contentDiv.querySelector('textarea');
+        textarea.focus();
+
+        // Добавляем обработчик Ctrl+Enter для быстрого сохранения
+        textarea.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                saveComment(commentId, contentDiv.querySelector('.btn-save'));
+            }
+        });
+    }
+
+    // AJAX запрос для сохранения отредактированного комментария
+    function saveComment(commentId, button) {
+        const contentDiv = button.closest('.comment-content');
+        const textarea = contentDiv.querySelector('textarea');
+        const newContent = textarea.value.trim();
+
+        if (!newContent) {
+            alert('Комментарий не может быть пустым');
+            return;
+        }
+
+        fetch(`/comments/${commentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ content: newContent })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Возвращаем обычный вид комментария с новым текстом
+                contentDiv.innerHTML = `<p>${newContent}</p>`;
+            } else {
+                alert('Ошибка при сохранении комментария');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при сохранении комментария');
+        });
+    }
+
+    // Функция отмены редактирования комментария
+    function cancelEditComment(commentId, originalText, button) {
+        const contentDiv = button.closest('.comment-content');
+        // Возвращаем исходный текст
+        contentDiv.innerHTML = `<p>${originalText}</p>`;
+    }
+
+    // AJAX запрос для удаления комментария
+    function deleteComment(button) {
+        const commentId = button.dataset.commentId;
+
+        if (confirm('Вы уверены, что хотите удалить этот комментарий?')) {
+            fetch(`/comments/${commentId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Удаляем элемент комментария из DOM
+                    button.closest('.comment').remove();
+                    // Обновляем счетчик комментариев
+                    const commentsCount = document.querySelectorAll('.comment').length;
+                    document.querySelector('.comments-header h3 span').textContent = commentsCount;
+                } else {
+                    alert('Ошибка при удалении комментария');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при удалении комментария');
+            });
+        }
+    }
+
+    // AJAX запрос для добавления лайка посту
+    function likePost() {
+        const postId = document.querySelector('.btn-like').dataset.postId;
+
+        fetch(`/posts/${postId}/like`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем счетчик лайков без перезагрузки страницы
+                document.querySelector('.likes-display span').textContent = data.likes;
+            } else {
+                alert('Ошибка при добавлении лайка');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при добавлении лайка');
+        });
+    }
+
+    // AJAX запрос для удаления поста
+    function deletePost() {
+        const postId = document.querySelector('.btn-delete').dataset.postId;
+
+        if (confirm('Вы уверены, что хотите удалить этот пост?')) {
+            fetch(`/posts/${postId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Перенаправляем на список постов после успешного удаления
+                    window.location.href = '/posts';
+                } else {
+                    alert('Ошибка при удалении поста');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при удалении поста');
+            });
+        }
+    }
+</script>
+</body>
+</html>
