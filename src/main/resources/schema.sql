@@ -27,8 +27,3 @@ CREATE TABLE IF NOT EXISTS post_tags (
   tag_id BIGINT REFERENCES tag(id),
   UNIQUE (post_id, tag_id)
 );
-
-INSERT INTO tag (name) VALUES ('Важное') ON CONFLICT (name) DO NOTHING;
-INSERT INTO tag (name) VALUES ('Путешествия') ON CONFLICT (name) DO NOTHING;
-INSERT INTO tag (name) VALUES ('Разработка') ON CONFLICT (name) DO NOTHING;
-INSERT INTO tag (name) VALUES ('Игры') ON CONFLICT (name) DO NOTHING;

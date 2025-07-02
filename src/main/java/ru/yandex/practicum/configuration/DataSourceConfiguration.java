@@ -9,6 +9,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 import javax.sql.DataSource;
 
@@ -40,7 +41,9 @@ public class DataSourceConfiguration {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
 
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql"));
+        populator.addScripts(new ClassPathResource("schema.sql"),
+                new ClassPathResource("data.sql"));
+        populator.setSeparator(ScriptUtils.EOF_STATEMENT_SEPARATOR);
         populator.execute(dataSource);
     }
 }
