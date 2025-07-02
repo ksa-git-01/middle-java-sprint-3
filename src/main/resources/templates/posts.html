@@ -11,6 +11,11 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
         h1 {
             text-align: center;
         }
@@ -196,77 +201,79 @@
     </style>
 </head>
 <body>
-<h1>Список постов</h1>
+<div class="container">
+    <h1>Список постов</h1>
 
-<div>
-    <button>Добавить пост</button>
-</div>
-
-<!-- Фильтр по тегам -->
-<div class="filter-section">
-    <div class="filter-controls">
-        <label for="tagFilter">Фильтр по тегу:</label>
-        <input type="text" id="tagFilter" placeholder="Введите название тега..." th:value="${tag}">
-        <button onclick="applyTagFilter()">Найти</button>
-    </div>
-</div>
-
-<!-- Элементы управления пагинацией -->
-<div class="pagination-controls">
-    <div class="page-size-control">
-        <label for="pageSize">Показать по:</label>
-        <select id="pageSize" onchange="changePageSize()">
-            <option value="10" th:selected="${size == 10}">10</option>
-            <option value="20" th:selected="${size == 20}">20</option>
-            <option value="50" th:selected="${size == 50}">50</option>
-        </select>
-        <span>постов на странице</span>
+    <div>
+        <button>Добавить пост</button>
     </div>
 
-    <div class="page-navigation">
-        <a th:href="@{/posts(page=${page > 0 ? page - 1 : 0}, size=${size}, tag=${tag})}"
-           class="page-btn"
-           th:class="${page == 0} ? 'page-btn disabled' : 'page-btn'"
-           th:onclick="${page == 0} ? 'return false;' : ''">
-            ← Назад
-        </a>
+    <!-- Фильтр по тегам -->
+    <div class="filter-section">
+        <div class="filter-controls">
+            <label for="tagFilter">Фильтр по тегу:</label>
+            <input type="text" id="tagFilter" placeholder="Введите название тега..." th:value="${tag}">
+            <button onclick="applyTagFilter()">Найти</button>
+        </div>
+    </div>
 
-        <span class="page-info">
+    <!-- Элементы управления пагинацией -->
+    <div class="pagination-controls">
+        <div class="page-size-control">
+            <label for="pageSize">Показать по:</label>
+            <select id="pageSize" onchange="changePageSize()">
+                <option value="10" th:selected="${size == 10}">10</option>
+                <option value="20" th:selected="${size == 20}">20</option>
+                <option value="50" th:selected="${size == 50}">50</option>
+            </select>
+            <span>постов на странице</span>
+        </div>
+
+        <div class="page-navigation">
+            <a th:href="@{/posts(page=${page > 0 ? page - 1 : 0}, size=${size}, tag=${tag})}"
+               class="page-btn"
+               th:class="${page == 0} ? 'page-btn disabled' : 'page-btn'"
+               th:onclick="${page == 0} ? 'return false;' : ''">
+                ← Назад
+            </a>
+
+            <span class="page-info">
             Страница <span th:text="${page + 1}"></span>
         </span>
 
-        <a th:href="@{/posts(page=${page + 1}, size=${size}, tag=${tag})}"
-           class="page-btn"
-           th:class="${posts.size() < size} ? 'page-btn disabled' : 'page-btn'"
-           th:onclick="${posts.size() < size} ? 'return false;' : ''">
-            Вперед →
-        </a>
+            <a th:href="@{/posts(page=${page + 1}, size=${size}, tag=${tag})}"
+               class="page-btn"
+               th:class="${posts.size() < size} ? 'page-btn disabled' : 'page-btn'"
+               th:onclick="${posts.size() < size} ? 'return false;' : ''">
+                Вперед →
+            </a>
+        </div>
     </div>
-</div>
 
-<div>
-    <div th:each="post : ${posts}" style="border: 1px solid #ccc; margin: 20px 0; padding: 15px;">
-        <h3 th:text="${post.title}"></h3>
-        <div style="display: flex; margin: 10px 0;">
-            <div class="post-thumbnail">
-                <img th:if="${post.filename != null and !post.filename.isEmpty()}"
-                     th:src="@{/images/{filename}(filename=${post.filename})}"
-                     alt=""
-                     class="post-image"
-                     onerror="this.style.display='none'; this.parentElement.querySelector('.post-no-image-content').style.display='flex';">
-                <div class="post-no-image-content"
-                     th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
-                    <span>Нет изображения</span>
+    <div>
+        <div th:each="post : ${posts}" style="border: 1px solid #ccc; margin: 20px 0; padding: 15px;">
+            <h3 th:text="${post.title}"></h3>
+            <div style="display: flex; margin: 10px 0;">
+                <div class="post-thumbnail">
+                    <img th:if="${post.filename != null and !post.filename.isEmpty()}"
+                         th:src="@{/images/{filename}(filename=${post.filename})}"
+                         alt=""
+                         class="post-image"
+                         onerror="this.style.display='none'; this.parentElement.querySelector('.post-no-image-content').style.display='flex';">
+                    <div class="post-no-image-content"
+                         th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
+                        <span>Нет изображения</span>
+                    </div>
                 </div>
+                <div th:text="${post.contentPreview}" style="flex: 1; white-space: pre-line;"></div>
             </div>
-            <div th:text="${post.contentPreview}" style="flex: 1; white-space: pre-line;"></div>
-        </div>
-        <div style="margin: 10px 0;">
-            <span th:text="'Теги: ' + ${post.tags}"></span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-            <span th:text="'Кол-во комментариев: ' + ${post.comments}"></span>
-            <span th:text="'Кол-во лайков: ' + ${post.likes}"></span>
+            <div style="margin: 10px 0;">
+                <span th:text="'Теги: ' + ${post.tags}"></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <span th:text="${post.comments} + ' комментариев'"></span>
+                <span th:text="${post.likes} + ' лайков'"></span>
+            </div>
         </div>
     </div>
 </div>
