@@ -32,11 +32,14 @@ services:
       - DB_NAME=${POSTGRES_DB:-myblog}
       - DB_USER=${POSTGRES_USER:-myblog_user}
       - DB_PASSWORD=${POSTGRES_PASSWORD:-password}
+    volumes:
+      - uploads_data:/app/uploads
     networks:
       - myblog-network
 
 volumes:
   postgres_data:
+  uploads_data:
 
 networks:
   myblog-network:
