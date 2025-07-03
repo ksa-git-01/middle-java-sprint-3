@@ -5,20 +5,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.yandex.practicum.dto.CommentItemDto;
 import ru.yandex.practicum.dto.PostItemDto;
 import ru.yandex.practicum.dto.PostListItemDto;
+import ru.yandex.practicum.service.CommentService;
 import ru.yandex.practicum.service.PostService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 @Controller
 public class PostController {
-    private final PostService service;
+    private final PostService postService;
+    private final CommentService commentService;
 
-    public PostController(PostService service) {
-        this.service = service;
+    public PostController(PostService postService, CommentService commentService) {
+        this.postService = postService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/posts")
@@ -32,7 +35,7 @@ public class PostController {
         if (!Set.of(10, 20, 50).contains(size)) {
             size = 10;
         }
-        List<PostListItemDto> postListItems = service.getPostListItems(page, size, tag);
+        List<PostListItemDto> postListItems = postService.getPostListItems(page, size, tag);
 
         model.addAttribute("posts", postListItems);
         model.addAttribute("page", page);
@@ -44,10 +47,11 @@ public class PostController {
     @GetMapping("/posts/{postId}")
     public String getPosts(@PathVariable(name = "postId") Long postId,
                            Model model) {
-        PostItemDto postItem = service.getPostItem(postId);
+        PostItemDto postItem = postService.getPostItem(postId);
+        List<CommentItemDto> commentItemList = commentService.getCommentsByPostId(postId);
 
         model.addAttribute("post", postItem);
-        model.addAttribute("comments", Collections.emptyList());
+        model.addAttribute("comments", commentItemList);
         return "post";
     }
 }

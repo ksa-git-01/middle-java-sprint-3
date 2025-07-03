@@ -2,11 +2,10 @@ package ru.yandex.practicum.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.model.Comment;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -23,10 +22,10 @@ public class CommentDaoPostgreRepository implements CommentDao {
             return Collections.emptyMap();
         }
         String sql = """
-                SELECT cm.post_id, count(cm.id) count
-                FROM comment cm
-                WHERE cm.post_id IN (%s)
-                GROUP BY cm.post_id
+                SELECT post_id, count(id) count
+                FROM comment
+                WHERE post_id IN (%s)
+                GROUP BY post_id
                 """.formatted(postIds.stream()
                 .map(id -> "?")
                 .collect(Collectors.joining(",")));
@@ -41,6 +40,30 @@ public class CommentDaoPostgreRepository implements CommentDao {
                     result.put(postId, count);
                 },
                 postIds.toArray());
+
+        return result;
+    }
+
+    @Override
+    public List<Comment> findAllByPostId(Long postId) {
+        String sql = """
+                SELECT id, post_id, content, created_at, updated_at
+                FROM comment
+                WHERE post_id = ?
+                ORDER BY created_at
+                """;
+
+        List<Comment> result = new ArrayList<>();
+
+        jdbcTemplate.query(sql,
+                (rs) -> {
+                    result.add(new Comment(rs.getLong("id"),
+                            rs.getLong("post_id"),
+                            rs.getString("content"),
+                            rs.getTimestamp("created_at").toLocalDateTime(),
+                            rs.getObject("updated_at", LocalDateTime.class)));
+                },
+                postId);
 
         return result;
     }
