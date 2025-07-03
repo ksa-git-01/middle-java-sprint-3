@@ -31,4 +31,8 @@ public class CommentService {
                 comment.createdAt(),
                 comment.updatedAt());
     }
+
+    public void updateCommentById(Long commentId, String content) {
+        commentDao.updateCommentById(commentId, content);
+    }
 }

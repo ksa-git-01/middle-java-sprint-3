@@ -511,9 +511,8 @@
             },
             body: JSON.stringify({ content: newContent })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        .then(response => {
+            if (response.ok) {
                 // Возвращаем обычный вид комментария с новым текстом
                 contentDiv.innerHTML = `<p>${newContent}</p>`;
             } else {

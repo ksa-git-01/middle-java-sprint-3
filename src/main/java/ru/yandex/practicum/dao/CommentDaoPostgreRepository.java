@@ -86,4 +86,14 @@ public class CommentDaoPostgreRepository implements CommentDao {
                 """;
         jdbcTemplate.update(sql, postId, content);
     }
+
+    @Override
+    public void updateCommentById(Long commentId, String content) {
+        String sql = """
+                UPDATE comment
+                SET content = ?
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql, content, commentId);
+    }
 }
