@@ -322,13 +322,15 @@
 
         <!-- Изображение поста или плейсхолдер -->
         <div class="post-image-container">
-            <img class="post-image-full"
-                 th:if="${post.filename != null and !post.filename.isEmpty()}"
-                 th:src="@{'/images/' + ${post.filename}}"
-                 th:alt="">
-            <div class="post-no-image-content"
-                 th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
-                <span>Нет изображения</span>
+            <div class="post-image-full">
+                <img th:if="${post.filename != null and !post.filename.isEmpty()}"
+                     th:src="@{/images/{filename}(filename=${post.filename})}"
+                     alt=""
+                     onerror="this.style.display='none'; this.parentElement.querySelector('.post-no-image-content').style.display='flex';">
+                <div class="post-no-image-content"
+                     th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
+                    <span>Нет изображения</span>
+                </div>
             </div>
         </div>
 
