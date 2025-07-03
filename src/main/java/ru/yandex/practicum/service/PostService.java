@@ -94,4 +94,8 @@ public class PostService {
     public void deletePost(Long postId) {
         postDao.deletePost(postId);
     }
+
+    public void addLikeToPost(Long postId) {
+        postDao.addLikeToPost(postId);
+    }
 }

@@ -95,4 +95,14 @@ public class PostDaoPostgreRepository implements PostDao {
                 """;
         jdbcTemplate.update(sql, postId);
     }
+
+    @Override
+    public void addLikeToPost(Long postId) {
+        String sql = """
+                UPDATE post
+                SET likes = likes + 1 
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql, postId);
+    }
 }

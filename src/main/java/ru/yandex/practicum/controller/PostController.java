@@ -70,4 +70,10 @@ public class PostController {
 
         postService.addCommentToPost(postId, request.content().trim());
     }
+
+    @PostMapping("/posts/{postId}/like")
+    @ResponseBody
+    public void addLike(@PathVariable("postId") Long postId) {
+        postService.addLikeToPost(postId);
+    }
 }

@@ -560,24 +560,23 @@
 
     // AJAX запрос для добавления лайка посту
     function likePost() {
-        const postId = document.querySelector('.btn-like').dataset.postId;
+       const postId = document.querySelector('.btn-like').dataset.postId;
 
-        fetch(`/posts/${postId}/like`, {
-            method: 'POST'
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Обновляем счетчик лайков без перезагрузки страницы
-                document.querySelector('.likes-display span').textContent = data.likes;
-            } else {
-                alert('Ошибка при добавлении лайка');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ошибка при добавлении лайка');
-        });
+       fetch(`/posts/${postId}/like`, {
+           method: 'POST'
+       })
+       .then(response => {
+           if (response.ok) {
+               // Перезагружаем страницу для обновления счетчика лайков
+               location.reload();
+           } else {
+               alert('Ошибка при добавлении лайка');
+           }
+       })
+       .catch(error => {
+           console.error('Error:', error);
+           alert('Ошибка при добавлении лайка');
+       });
     }
 
     // AJAX запрос для удаления поста

@@ -12,4 +12,6 @@ public interface PostDao {
     Post getPostByPostId(Long postId);
 
     void deletePost(Long postId);
+
+    void addLikeToPost(Long postId);
 }
