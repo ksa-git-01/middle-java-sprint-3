@@ -15,15 +15,27 @@ CREATE TABLE IF NOT EXISTS tag (
 
 CREATE TABLE IF NOT EXISTS comment (
   id BIGSERIAL PRIMARY KEY,
-  post_id BIGINT REFERENCES post(id),
+  post_id BIGINT,
   content TEXT NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP
+  updated_at TIMESTAMP,
+  CONSTRAINT fk_comment_post
+      FOREIGN KEY (post_id)
+      REFERENCES post(id)
+      ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS post_tags (
   id BIGSERIAL PRIMARY KEY,
-  post_id BIGINT REFERENCES post(id),
-  tag_id BIGINT REFERENCES tag(id),
-  UNIQUE (post_id, tag_id)
+  post_id BIGINT,
+  tag_id BIGINT,
+  UNIQUE (post_id, tag_id),
+  CONSTRAINT fk_post_tags_post
+      FOREIGN KEY (post_id)
+      REFERENCES post(id)
+      ON DELETE CASCADE,
+  CONSTRAINT fk_post_tags_tag
+      FOREIGN KEY (tag_id)
+      REFERENCES tag(id)
+      ON DELETE CASCADE
 );
