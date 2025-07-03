@@ -2,6 +2,7 @@ package ru.yandex.practicum.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.dto.CreatePostRequestDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,5 +63,30 @@ public class TagDaoPostgreRepository implements TagDao {
                 postId);
 
         return result;
+    }
+
+    @Override
+    public void createTags(List<String> tags) {
+        String sql = """
+                INSERT INTO tag (name) VALUES (?) ON CONFLICT DO NOTHING
+                """;
+        List<Object[]> args = tags.stream()
+                .map(s -> new Object[]{s})
+                .toList();
+        jdbcTemplate.batchUpdate(sql, args);
+    }
+
+    @Override
+    public void createPostTags(Long postId, CreatePostRequestDto createPostRequestDto) {
+        String sql = """
+                INSERT INTO post_tags (post_id, tag_id)
+                SELECT ?, id
+                FROM tag
+                WHERE name = ?
+                """;
+        List<Object[]> args = createPostRequestDto.tags().stream()
+                .map(tagName -> new Object[]{postId, tagName})
+                .toList();
+        jdbcTemplate.batchUpdate(sql, args);
     }
 }

@@ -2,6 +2,7 @@ package ru.yandex.practicum.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.dto.CreatePostRequestDto;
 import ru.yandex.practicum.model.Post;
 
 import java.time.LocalDateTime;
@@ -104,5 +105,19 @@ public class PostDaoPostgreRepository implements PostDao {
                 WHERE id = ?
                 """;
         jdbcTemplate.update(sql, postId);
+    }
+
+    @Override
+    public Long createPost(CreatePostRequestDto createPostRequestDto) {
+        String sql = """
+                INSERT INTO post(title, content, filename)
+                VALUES (?, ?, ?)
+                RETURNING id
+                """;
+        return jdbcTemplate.queryForObject(sql,
+                Long.class,
+                createPostRequestDto.title(),
+                createPostRequestDto.content(),
+                createPostRequestDto.filename());
     }
 }

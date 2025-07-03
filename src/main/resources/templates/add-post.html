@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Динамический заголовок - создание или редактирование -->
+    <title th:text="${post != null ? 'Редактирование поста' : 'Добавление нового поста'}">Добавление поста</title>
+
+    <style>
+        /* Базовые стили - общие для всего приложения */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        /* Контейнер для центрирования контента */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* Стили заголовков */
+        h1 {
+            text-align: center;
+        }
+
+        /* Стили для меток форм */
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Стили для полей ввода */
+        input[type="text"], input[type="file"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        /* Стили для текстового поля контента */
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        /* Базовые стили кнопок */
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            background-color: #f4f4f4;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* Ссылка для возврата к списку постов */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Контейнер для формы */
+        .form-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Контейнер для кнопок действий */
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Стили для отображения текущего изображения */
+        .current-image {
+            margin-top: 10px;
+            max-width: 300px;
+            border-radius: 4px;
+        }
+
+        /* Стили для информации о текущем изображении */
+        .image-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Ссылка для возврата к списку постов -->
+    <a href="/posts" class="back-link">← Назад к ленте постов</a>
+
+    <!-- Основной контейнер формы -->
+    <div class="form-container">
+        <!-- Заголовок формы -->
+        <h1 th:text="${post != null ? 'Редактирование поста' : 'Добавление нового поста'}">Добавление поста</h1>
+
+        <!-- Форма добавления/редактирования поста -->
+        <form id="postForm" enctype="multipart/form-data">
+
+            <!-- Скрытое поле для ID поста при редактировании -->
+            <input type="hidden" name="postId" th:if="${post != null}" th:value="${post.id}">
+
+            <!-- Поле для названия поста -->
+            <label for="title">Название поста:</label>
+            <input type="text" id="title" name="title" th:value="${post != null ? post.title : ''}" required>
+
+            <!-- Поле для загрузки изображения -->
+            <label for="image">Изображение:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+
+            <!-- Отображение текущего изображения при редактировании -->
+            <div th:if="${post != null and post.filename != null}" class="image-info">
+                <p>Текущее изображение:</p>
+                <img th:src="@{'/images/' + ${post.filename}}"
+                     th:alt="${post.title}"
+                     class="current-image">
+                <p class="image-info">Загрузите новое изображение, чтобы заменить текущее</p>
+            </div>
+
+            <!-- Поле для содержимого поста -->
+            <label for="content">Содержимое поста:</label>
+            <textarea id="content" name="content" th:text="${post?.content}"
+                      placeholder="Введите текст поста..." required></textarea>
+
+            <!-- Поле для тегов -->
+            <label for="tags">Теги (через запятую):</label>
+            <input type="text" id="tags" name="tags"
+                   th:value="${post != null and post.tags != null ? #strings.arrayJoin(post.tags.![name].toArray(), ', ') : ''}"
+                   placeholder="например: технологии, программирование, java">
+
+            <!-- Кнопки управления формой -->
+            <div class="form-actions">
+                <!-- Кнопка сохранения -->
+                <button type="submit" th:text="${post != null ? 'Сохранить изменения' : 'Создать пост'}">
+                    Создать пост
+                </button>
+                <!-- Кнопка отмены -->
+                <button type="button" onclick="window.history.back()">Отмена</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Обработчик отправки формы
+    document.getElementById('postForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Получаем данные формы
+        const formData = new FormData(this);
+
+        // Определяем метод и URL в зависимости от режима (создание/редактирование)
+        // Проверяем наличие post.id в модели для определения режима
+        const isEdit = document.querySelector('input[name="postId"]') !== null;
+        const postId = isEdit ? document.querySelector('input[name="postId"]').value : null;
+        const method = isEdit ? 'PUT' : 'POST';
+        const url = isEdit ? `/posts/${postId}` : '/posts';
+
+        // Отправляем запрос
+        fetch(url, {
+            method: method,
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Перенаправляем на список постов после успешного сохранения
+                window.location.href = '/posts';
+            } else {
+                alert('Ошибка при сохранении поста');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при сохранении поста');
+        });
+    });
+</script>
+</body>
+</html>
