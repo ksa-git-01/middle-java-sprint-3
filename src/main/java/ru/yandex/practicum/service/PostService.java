@@ -90,4 +90,8 @@ public class PostService {
     public void addCommentToPost(Long postId, String content) {
         commentDao.addCommentToPost(postId, content);
     }
+
+    public void deletePost(Long postId) {
+        postDao.deletePost(postId);
+    }
 }

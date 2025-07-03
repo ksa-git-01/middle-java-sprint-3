@@ -54,6 +54,12 @@ public class PostController {
         return "post";
     }
 
+    @DeleteMapping("/posts/{postId}")
+    @ResponseBody
+    public void deletePost(@PathVariable(name = "postId") Long postId) {
+        postService.deletePost(postId);
+    }
+
     @PostMapping("/posts/{postId}/comment")
     @ResponseBody
     public void addComment(@PathVariable("postId") Long postId,

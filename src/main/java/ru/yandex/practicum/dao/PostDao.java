@@ -10,4 +10,6 @@ public interface PostDao {
     List<Post> findAllByTagWithPagination(Integer page, Integer size, String tag);
 
     Post getPostByPostId(Long postId);
+
+    void deletePost(Long postId);
 }

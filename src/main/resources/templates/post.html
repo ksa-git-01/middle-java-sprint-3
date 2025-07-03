@@ -582,26 +582,25 @@
 
     // AJAX запрос для удаления поста
     function deletePost() {
-        const postId = document.querySelector('.btn-delete').dataset.postId;
+       const postId = document.querySelector('.btn-delete').dataset.postId;
 
-        if (confirm('Вы уверены, что хотите удалить этот пост?')) {
-            fetch(`/posts/${postId}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Перенаправляем на список постов после успешного удаления
-                    window.location.href = '/posts';
-                } else {
-                    alert('Ошибка при удалении поста');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ошибка при удалении поста');
-            });
-        }
+       if (confirm('Вы уверены, что хотите удалить этот пост?')) {
+           fetch(`/posts/${postId}`, {
+               method: 'DELETE'
+           })
+           .then(response => {
+               if (response.ok) {
+                   // Перенаправляем на список постов после успешного удаления
+                   window.location.href = '/posts';
+               } else {
+                   alert('Ошибка при удалении поста');
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               alert('Ошибка при удалении поста');
+           });
+       }
     }
 </script>
 </body>

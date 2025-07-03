@@ -85,4 +85,14 @@ public class PostDaoPostgreRepository implements PostDao {
                 postId
         );
     }
+
+    @Override
+    public void deletePost(Long postId) {
+        String sql = """
+                DELETE
+                FROM post
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql, postId);
+    }
 }
