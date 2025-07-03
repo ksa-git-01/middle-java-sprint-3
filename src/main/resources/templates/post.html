@@ -539,9 +539,8 @@
             fetch(`/comments/${commentId}`, {
                 method: 'DELETE'
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+            .then(response => {
+                if (response.ok) {
                     // Удаляем элемент комментария из DOM
                     button.closest('.comment').remove();
                     // Обновляем счетчик комментариев

@@ -9,4 +9,6 @@ public interface CommentDao {
     Map<Long, Integer> findCommentCountByPostIds(List<Long> postIds);
 
     List<Comment> findAllByPostId(Long postId);
+
+    void deleteCommentByCommentId(Long commentId);
 }

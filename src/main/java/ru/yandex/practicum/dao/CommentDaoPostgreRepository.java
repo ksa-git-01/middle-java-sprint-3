@@ -67,4 +67,14 @@ public class CommentDaoPostgreRepository implements CommentDao {
 
         return result;
     }
+
+    @Override
+    public void deleteCommentByCommentId(Long commentId) {
+        String sql = """
+                DELETE
+                FROM comment
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql, commentId);
+    }
 }

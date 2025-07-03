@@ -21,6 +21,10 @@ public class CommentService {
                 .toList();
     }
 
+    public void deleteCommentByCommentId(Long commentId) {
+        commentDao.deleteCommentByCommentId(commentId);
+    }
+
     private CommentItemDto mapToCommentItemDto(Comment comment) {
         return new CommentItemDto(comment.id(),
                 comment.content(),
