@@ -66,4 +66,23 @@ public class PostDaoPostgreRepository implements PostDao {
                 offset
         );
     }
+
+    @Override
+    public Post getPostByPostId(Long postId) {
+        return jdbcTemplate.queryForObject("""
+                        SELECT id, title, content, likes, filename, created_at, updated_at 
+                        FROM post 
+                        WHERE id = ?
+                        """,
+                (rs, rowNum) -> new Post(
+                        rs.getLong("id"),
+                        rs.getString("title"),
+                        rs.getString("content"),
+                        rs.getInt("likes"),
+                        rs.getString("filename"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getObject("updated_at", LocalDateTime.class)),
+                postId
+        );
+    }
 }

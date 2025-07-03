@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.dao.CommentDao;
 import ru.yandex.practicum.dao.PostDao;
 import ru.yandex.practicum.dao.TagDao;
+import ru.yandex.practicum.dto.PostItemDto;
 import ru.yandex.practicum.dto.PostListItemDto;
 import ru.yandex.practicum.model.Post;
 
@@ -43,6 +44,12 @@ public class PostService {
                 .toList();
     }
 
+    public PostItemDto getPostItem(Long postId) {
+        Post post = postDao.getPostByPostId(postId);
+        List<String> tags = tagDao.findTagsByPostId(postId);
+        return mapToPostItemDto(post, tags);
+    }
+
     private List<Post> findPosts(Integer page, Integer size, String tag) {
         if (tag != null && !tag.trim().isEmpty()) {
             return postDao.findAllByTagWithPagination(page, size, tag.trim());
@@ -54,17 +61,23 @@ public class PostService {
     private PostListItemDto mapToPostListItemDto(Post post,
                                                  Map<Long, List<String>> tagsByPostId,
                                                  Map<Long, Integer> commentCountByPostId) {
-        PostListItemDto item = new PostListItemDto(post.id(),
+        return new PostListItemDto(post.id(),
                 post.title(),
                 truncateContent(post.content()),
                 post.likes(),
-                post.filename()
+                post.filename(),
+                commentCountByPostId.getOrDefault(post.id(), 0),
+                tagsByPostId.getOrDefault(post.id(), List.of("Нет тегов")));
+    }
+
+    private PostItemDto mapToPostItemDto(Post post, List<String> tags) {
+        return new PostItemDto(post.id(),
+                post.title(),
+                post.content(),
+                post.likes(),
+                post.filename(),
+                tags
         );
-
-        item.setTags(tagsByPostId.getOrDefault(post.id(), List.of("Нет тегов")));
-        item.setComments(commentCountByPostId.getOrDefault(post.id(), 0));
-
-        return item;
     }
 
     private String truncateContent(String content) {
@@ -73,4 +86,5 @@ public class PostService {
                 .limit(3)
                 .collect(Collectors.joining("\n"));
     }
+
 }

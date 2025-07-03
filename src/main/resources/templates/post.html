@@ -137,11 +137,6 @@
             white-space: pre-line;
         }
 
-        /* Контейнер для тегов поста */
-        .post-tags {
-            margin-bottom: 20px;
-        }
-
         /* Контейнер для кнопок действий с постом */
         .post-actions {
             display: flex;
@@ -330,7 +325,7 @@
             <img class="post-image-full"
                  th:if="${post.filename != null and !post.filename.isEmpty()}"
                  th:src="@{'/images/' + ${post.filename}}"
-                 th:alt="${post.title}">
+                 th:alt="">
             <div class="post-no-image-content"
                  th:style="${post.filename != null and !post.filename.isEmpty()} ? 'display: none;' : 'display: flex;'">
                 <span>Нет изображения</span>
@@ -342,10 +337,8 @@
             Содержимое поста
         </div>
 
-        <!-- Теги поста - простой текст через запятую -->
-        <div class="post-tags" th:if="${not #lists.isEmpty(post.tags)}">
-            <strong>Теги: </strong>
-            <span th:text="${#strings.arrayJoin(post.tags.![name].toArray(), ', ')}">тег1, тег2, тег3</span>
+        <div style="margin: 10px 0;">
+            <span th:text="'Теги: ' + ${post.tags}">Нет тегов</span>
         </div>
 
         <!-- Отображение количества лайков -->

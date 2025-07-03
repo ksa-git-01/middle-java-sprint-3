@@ -42,4 +42,25 @@ public class TagDaoPostgreRepository implements TagDao {
 
         return result;
     }
+
+    @Override
+    public List<String> findTagsByPostId(Long postId) {
+        String sql = """
+                SELECT t.name
+                FROM post_tags pt
+                JOIN tag t ON pt.tag_id = t.id
+                WHERE pt.post_id = ?
+                ORDER BY t.name
+                """;
+
+        List<String> result = new ArrayList<>();
+
+        jdbcTemplate.query(sql,
+                (rs) -> {
+                    result.add(rs.getString("name"));
+                },
+                postId);
+
+        return result;
+    }
 }

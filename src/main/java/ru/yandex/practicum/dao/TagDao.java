@@ -5,4 +5,6 @@ import java.util.Map;
 
 public interface TagDao {
     Map<Long, List<String>> findTagsByPostIds(List<Long> postIds);
+
+    List<String> findTagsByPostId(Long postId);
 }
