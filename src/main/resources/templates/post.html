@@ -411,7 +411,10 @@
     // Функция переключения видимости формы добавления комментария
     function toggleAddCommentForm() {
         const form = document.getElementById('addCommentForm');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        // Используем проверку видимости вместо стиля
+        const isVisible = form.offsetParent !== null;
+        form.style.display = isVisible ? 'none' : 'block';
+
         // Автофокус на поле ввода при показе формы
         if (form.style.display === 'block') {
             form.querySelector('textarea').focus();
@@ -449,9 +452,8 @@
             },
             body: JSON.stringify({ content: content })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
+        .then(response => {
+            if (response.ok) {
                 location.reload(); // Перезагружаем страницу для обновления списка
             } else {
                 alert('Ошибка при добавлении комментария');

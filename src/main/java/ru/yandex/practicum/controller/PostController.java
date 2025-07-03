@@ -2,10 +2,9 @@ package ru.yandex.practicum.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.dto.CommentItemDto;
+import ru.yandex.practicum.dto.CommentRequestDto;
 import ru.yandex.practicum.dto.PostItemDto;
 import ru.yandex.practicum.dto.PostListItemDto;
 import ru.yandex.practicum.service.CommentService;
@@ -53,5 +52,16 @@ public class PostController {
         model.addAttribute("post", postItem);
         model.addAttribute("comments", commentItemList);
         return "post";
+    }
+
+    @PostMapping("/posts/{postId}/comment")
+    @ResponseBody
+    public void addComment(@PathVariable("postId") Long postId,
+                           @RequestBody CommentRequestDto request) {
+        if (request.content() == null || request.content().trim().isEmpty()) {
+            throw new IllegalArgumentException("Содержимое комментария не может быть пустым");
+        }
+
+        postService.addCommentToPost(postId, request.content().trim());
     }
 }

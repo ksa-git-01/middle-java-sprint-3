@@ -11,4 +11,6 @@ public interface CommentDao {
     List<Comment> findAllByPostId(Long postId);
 
     void deleteCommentByCommentId(Long commentId);
+
+    void addCommentToPost(Long postId, String content);
 }

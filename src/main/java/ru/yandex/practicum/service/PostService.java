@@ -87,4 +87,7 @@ public class PostService {
                 .collect(Collectors.joining("\n"));
     }
 
+    public void addCommentToPost(Long postId, String content) {
+        commentDao.addCommentToPost(postId, content);
+    }
 }

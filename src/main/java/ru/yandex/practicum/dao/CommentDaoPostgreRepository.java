@@ -77,4 +77,13 @@ public class CommentDaoPostgreRepository implements CommentDao {
                 """;
         jdbcTemplate.update(sql, commentId);
     }
+
+    @Override
+    public void addCommentToPost(Long postId, String content) {
+        String sql = """
+                INSERT INTO comment(post_id, content)
+                VALUES (?, ?)
+                """;
+        jdbcTemplate.update(sql, postId, content);
+    }
 }
