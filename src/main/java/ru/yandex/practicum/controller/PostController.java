@@ -57,6 +57,14 @@ public class PostController {
         return "add-post";
     }
 
+    @GetMapping("/posts/{postId}/edit")
+    public String showEditPostForm(@PathVariable(name = "postId") Long postId,
+                                   Model model) {
+        PostItemDto post = postService.getPostItem(postId);
+        model.addAttribute("post", post);
+        return "add-post";
+    }
+
     @PostMapping("/posts")
     @ResponseBody
     public void addPost(@RequestParam("title") String title,

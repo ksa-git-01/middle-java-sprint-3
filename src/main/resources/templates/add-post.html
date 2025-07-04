@@ -147,7 +147,7 @@
             <!-- Поле для тегов -->
             <label for="tags">Теги (через запятую):</label>
             <input type="text" id="tags" name="tags"
-                   th:value="${post != null and post.tags != null ? #strings.arrayJoin(post.tags.![name].toArray(), ', ') : ''}"
+                   th:value="${post != null and post.tags != null ? #strings.listJoin(post.tags, ', ') : ''}"
                    placeholder="например: технологии, программирование, java">
 
             <!-- Кнопки управления формой -->
