@@ -19,7 +19,7 @@ CREATE TABLE post (
     content TEXT NOT NULL,
     likes INTEGER DEFAULT 0,
     filename VARCHAR(500),
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP
 );
 
@@ -32,7 +32,7 @@ CREATE TABLE comment (
     id BIGINT DEFAULT nextval('comment_id_seq') PRIMARY KEY,
     post_id BIGINT NOT NULL,
     content TEXT NOT NULL,
-    created_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE
 );
