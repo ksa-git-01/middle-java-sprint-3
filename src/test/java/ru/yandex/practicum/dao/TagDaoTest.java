@@ -32,13 +32,14 @@ public class TagDaoTest {
     private TagDao tagDao;
 
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUpSchema() throws SQLException {
         ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("test-schema.sql"));
     }
 
     @Test
     void createNewTags() {
         tagDao.createTags(List.of("tag1", "tag2"));
+
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM tag", Integer.class);
         assertEquals(2, count);
         List<String> newTags = jdbcTemplate.queryForList("SELECT name FROM tag ORDER BY name", String.class);
