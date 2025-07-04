@@ -3,6 +3,7 @@ package ru.yandex.practicum.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.dto.CreatePostRequestDto;
+import ru.yandex.practicum.dto.EditPostRequestDto;
 import ru.yandex.practicum.model.Post;
 
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public class PostDaoPostgreRepository implements PostDao {
     public List<Post> findAllWithPagination(Integer page, Integer size) {
         Integer offset = size * page;
         return jdbcTemplate.query("""
-                        SELECT id, title, content, likes, filename, created_at, updated_at 
-                        FROM post 
+                        SELECT id, title, content, likes, filename, created_at, updated_at
+                        FROM post
                         ORDER BY id 
                         LIMIT ? OFFSET ?
                         """,
@@ -119,5 +120,23 @@ public class PostDaoPostgreRepository implements PostDao {
                 createPostRequestDto.title(),
                 createPostRequestDto.content(),
                 createPostRequestDto.filename());
+    }
+
+    @Override
+    public void updatePost(EditPostRequestDto editPostRequestDto) {
+        String sql = """
+                UPDATE post
+                SET title = ?,
+                    content = ?,
+                    filename = ?,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?
+                """;
+        jdbcTemplate.update(sql,
+                editPostRequestDto.title(),
+                editPostRequestDto.content(),
+                editPostRequestDto.filename(),
+                editPostRequestDto.id()
+        );
     }
 }

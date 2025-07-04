@@ -79,6 +79,22 @@ public class PostController {
                 tagList));
     }
 
+    @PutMapping("/posts/{postId}")
+    @ResponseBody
+    public void editPost(@PathVariable(name = "postId") Long postId,
+                         @RequestParam("title") String title,
+                         @RequestParam("content") String content,
+                         @RequestParam("tags") String tags,
+                         @RequestParam(value = "image", required = false) MultipartFile image) {
+        String filename = saveImage(image);
+        List<String> tagList = convertTagsToTagList(tags);
+        postService.editPost(new EditPostRequestDto(postId,
+                title,
+                content,
+                filename,
+                tagList));
+    }
+
     private List<String> convertTagsToTagList(String tags) {
         return Arrays.stream(tags.split(","))
                 .map(String::trim)

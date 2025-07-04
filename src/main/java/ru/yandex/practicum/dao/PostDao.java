@@ -1,6 +1,7 @@
 package ru.yandex.practicum.dao;
 
 import ru.yandex.practicum.dto.CreatePostRequestDto;
+import ru.yandex.practicum.dto.EditPostRequestDto;
 import ru.yandex.practicum.model.Post;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface PostDao {
     void addLikeToPost(Long postId);
 
     Long createPost(CreatePostRequestDto createPostRequestDto);
+
+    void updatePost(EditPostRequestDto editPostRequestDto);
 }

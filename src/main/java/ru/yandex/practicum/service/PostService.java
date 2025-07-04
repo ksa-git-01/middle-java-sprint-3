@@ -6,6 +6,7 @@ import ru.yandex.practicum.dao.CommentDao;
 import ru.yandex.practicum.dao.PostDao;
 import ru.yandex.practicum.dao.TagDao;
 import ru.yandex.practicum.dto.CreatePostRequestDto;
+import ru.yandex.practicum.dto.EditPostRequestDto;
 import ru.yandex.practicum.dto.PostItemDto;
 import ru.yandex.practicum.dto.PostListItemDto;
 import ru.yandex.practicum.model.Post;
@@ -105,6 +106,12 @@ public class PostService {
     public void createPost(CreatePostRequestDto createPostRequestDto) {
         tagDao.createTags(createPostRequestDto.tags());
         Long postId = postDao.createPost(createPostRequestDto);
-        tagDao.createPostTags(postId, createPostRequestDto);
+        tagDao.createPostTags(postId, createPostRequestDto.tags());
+    }
+
+    public void editPost(EditPostRequestDto editPostRequestDto) {
+        tagDao.createTags(editPostRequestDto.tags());
+        postDao.updatePost(editPostRequestDto);
+        tagDao.createPostTags(editPostRequestDto.id(), editPostRequestDto.tags());
     }
 }
