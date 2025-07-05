@@ -45,7 +45,7 @@ docker-compose up
 ```
 Веб-страницы:
 Лента постов: http://localhost:18080/posts
-Просмотр посты: http://localhost:18080/posts/{postId}
+Просмотр поста: http://localhost:18080/posts/{postId}
 Создание поста: http://localhost:18080/posts/add
 
 Эндпоинты:
