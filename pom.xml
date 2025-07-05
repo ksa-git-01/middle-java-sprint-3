@@ -18,6 +18,8 @@
 
         <spring.version>6.2.8</spring.version>
         <testcontainers.version>1.21.3</testcontainers.version>
+        <mockito.version>5.18.0</mockito.version>
+        <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
     </properties>
     <dependencies>
         <!-- Spring -->
@@ -51,12 +53,12 @@
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
-            <version>3.1.2.RELEASE</version>
+            <version>${thymeleaf.version}</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf-spring6</artifactId>
-            <version>3.1.2.RELEASE</version>
+            <version>${thymeleaf.version}</version>
         </dependency>
 
         <!-- Jackson -->
@@ -85,6 +87,20 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 
