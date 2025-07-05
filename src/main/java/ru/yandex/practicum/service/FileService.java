@@ -1,6 +1,8 @@
 package ru.yandex.practicum.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,35 @@ public class FileService {
             }
         }
         return filename;
+    }
+
+    public Resource getImageResource(String filename) throws IOException {
+        Path uploadDir = Paths.get(imageDir).toAbsolutePath().normalize();
+        Path filePath = uploadDir.resolve(filename).normalize();
+
+        Resource resource = new UrlResource(filePath.toUri());
+
+        if (!resource.exists() || !resource.isReadable()) {
+            return null;
+        }
+
+        return resource;
+    }
+
+    public String getImageContentType(String filename) {
+        try {
+            Path uploadDir = Paths.get(imageDir).toAbsolutePath().normalize();
+            Path filePath = uploadDir.resolve(filename).normalize();
+
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null || !contentType.startsWith("image/")) {
+                contentType = "image/jpeg";
+            }
+
+            return contentType;
+        } catch (Exception e) {
+            return "image/jpeg";
+        }
     }
 
     private String getFilename(MultipartFile image) {
