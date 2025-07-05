@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import ru.yandex.practicum.controller.CommentController;
+import ru.yandex.practicum.controller.ImageController;
 import ru.yandex.practicum.controller.PostController;
 import ru.yandex.practicum.dao.CommentDao;
 import ru.yandex.practicum.dao.PostDao;
@@ -45,5 +46,10 @@ public class TestWebConfig {
                                          CommentService commentService,
                                          FileService fileService) {
         return new PostController(postService, commentService, fileService);
+    }
+
+    @Bean
+    public ImageController imageController(FileService fileService) {
+        return new ImageController(fileService);
     }
 }
