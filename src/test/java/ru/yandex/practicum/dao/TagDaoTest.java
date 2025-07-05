@@ -40,7 +40,7 @@ public class TagDaoTest {
     void createNewTagsTest() {
         tagDao.createTags(List.of("tag1", "tag2"));
 
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM tag", Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM tag", Integer.class);
         assertEquals(2, count);
         List<String> newTags = jdbcTemplate.queryForList("SELECT name FROM tag ORDER BY name", String.class);
         assertEquals(List.of("tag1", "tag2"), newTags);
@@ -54,7 +54,7 @@ public class TagDaoTest {
 
         tagDao.createPostTags(1L, List.of("Тег 1", "Тег 2"));
 
-        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM post_tags", Integer.class);
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(1) FROM post_tags", Integer.class);
         assertEquals(2, count);
     }
 

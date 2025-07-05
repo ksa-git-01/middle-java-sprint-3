@@ -10,23 +10,38 @@ Spring Framework 6.2.8 (без Spring Boot)
 PostgreSQL 16.9
 Apache Tomcat 10
 Maven
+Testcontainers
 Docker & Docker Compose
 ```
 
 ### Требования к окружению
 
 ```
-Установленный Docker Desktop
+Docker Desktop
+Maven
+JDK 21
+Клонировать репозиторий: https://github.com/ksa-git-01/middle-java-sprint-3.git
+```
+
+### Запуск тестов
+
+```
+# из корня проекта:
+mvn clean test
 ```
 
 ### Сборка и запуск
 
 ```
+# из корня проекта:
 docker-compose up
 ```
 
-### Доступ
+### Ресурсы проекта
 
 ```
-Веб-приложение: http://localhost:18080
+Веб-страницы:
+Лента постов: http://localhost:18080/posts
+Просмотр посты: http://localhost:18080/posts/{postId}
+Создание поста: http://localhost:18080/posts/add
 ```

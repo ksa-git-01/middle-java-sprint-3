@@ -74,11 +74,15 @@ public class CommentDaoTest {
         jdbcTemplate.update("INSERT INTO comment(post_id, content) VALUES (1, 'Коммент 1 для поста 1')");
         jdbcTemplate.update("INSERT INTO comment(post_id, content) VALUES (1, 'Коммент 2 для поста 1')");
 
+        Integer commentCountBeforeDelete = jdbcTemplate.queryForObject("SELECT count(1) FROM comment", Integer.class);
+
+        assertEquals(2, commentCountBeforeDelete);
+
         commentDao.deleteCommentByCommentId(2L);
 
-        Integer commentCountAfterDeleted = jdbcTemplate.queryForObject("SELECT count(1) FROM comment", Integer.class);
+        Integer commentCountAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) FROM comment", Integer.class);
 
-        assertEquals(1, commentCountAfterDeleted);
+        assertEquals(1, commentCountAfterDelete);
     }
 
     @Test
@@ -95,7 +99,7 @@ public class CommentDaoTest {
 
         assertEquals(1, commentCountAfterCreation);
     }
-    
+
     @Test
     void updateCommentByIdTest() {
         jdbcTemplate.update("INSERT INTO post(title, content) VALUES ('Пост 1','Содержимое поста 1')");

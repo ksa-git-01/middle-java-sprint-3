@@ -4,10 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.yandex.practicum.dao.CommentDao;
-import ru.yandex.practicum.dao.CommentDaoPostgreRepository;
-import ru.yandex.practicum.dao.TagDao;
-import ru.yandex.practicum.dao.TagDaoPostgreRepository;
+import ru.yandex.practicum.dao.*;
 
 @Configuration
 @Profile("test")
@@ -21,5 +18,10 @@ public class TestDaoConfig {
     @Bean
     public CommentDao commentDao(JdbcTemplate jdbcTemplate) {
         return new CommentDaoPostgreRepository(jdbcTemplate);
+    }
+
+    @Bean
+    public PostDao postDao(JdbcTemplate jdbcTemplate) {
+        return new PostDaoPostgreRepository(jdbcTemplate);
     }
 }
