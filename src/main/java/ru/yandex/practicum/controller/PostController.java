@@ -1,35 +1,28 @@
 package ru.yandex.practicum.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.service.CommentService;
+import ru.yandex.practicum.service.FileService;
 import ru.yandex.practicum.service.PostService;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Controller
 public class PostController {
     private final PostService postService;
     private final CommentService commentService;
+    private final FileService fileService;
 
-    @Value("${storage.image.path}")
-    private String imageDir;
-
-    public PostController(PostService postService, CommentService commentService) {
+    public PostController(PostService postService, CommentService commentService, FileService fileService) {
         this.postService = postService;
         this.commentService = commentService;
+        this.fileService = fileService;
     }
 
     @GetMapping("/posts")
@@ -71,7 +64,7 @@ public class PostController {
                         @RequestParam("content") String content,
                         @RequestParam("tags") String tags,
                         @RequestParam(value = "image", required = false) MultipartFile image) {
-        String filename = saveImage(image);
+        String filename = fileService.saveImage(image);
         List<String> tagList = convertTagsToTagList(tags);
         postService.createPost(new CreatePostRequestDto(title,
                 content,
@@ -86,7 +79,7 @@ public class PostController {
                          @RequestParam("content") String content,
                          @RequestParam("tags") String tags,
                          @RequestParam(value = "image", required = false) MultipartFile image) {
-        String filename = saveImage(image);
+        String filename = fileService.saveImage(image);
         List<String> tagList = convertTagsToTagList(tags);
         postService.editPost(new EditPostRequestDto(postId,
                 title,
@@ -100,26 +93,6 @@ public class PostController {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .toList();
-    }
-
-    private String getFilename(MultipartFile image) {
-        String fileExtension = image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf("."));
-        return UUID.randomUUID() + fileExtension;
-    }
-
-    private String saveImage(MultipartFile image) {
-        String filename = null;
-        if (image != null && !image.isEmpty()) {
-            filename = getFilename(image);
-            Path uploadPath = Paths.get(imageDir);
-            Path filePath = uploadPath.resolve(filename);
-            try {
-                Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return filename;
     }
 
     @GetMapping("/posts/{postId}")
