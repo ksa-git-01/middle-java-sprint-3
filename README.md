@@ -44,4 +44,20 @@ docker-compose up
 Лента постов: http://localhost:18080/posts
 Просмотр посты: http://localhost:18080/posts/{postId}
 Создание поста: http://localhost:18080/posts/add
+
+Эндпоинты:
+DELETE /comments/{commentId} - удаление комментария
+PUT /comments/{commentId} - обновление содержимого комментария
+
+GET /images/{filename} - получить файл изображения поста
+
+GET /posts?page=&size=&tag= - получить список постов
+GET /posts/add - отобразить форму создания поста
+GET /posts/{postId}/edit - отобразить форму редактирования поста
+POST /posts?title=&content=&tags=&image= - создать новый пост
+PUT /posts/{postId}?title=&content=&tags=&image= - обновить существующий пост
+GET /posts/{postId} - получить детальную информацию о посте
+DELETE /posts/{postId} - удалить пост
+POST /posts/{postId}/comment - добавить комментарий к посту
+POST /posts/{postId}/like - добавить лайк к посту
 ```
