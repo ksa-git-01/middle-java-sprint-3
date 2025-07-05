@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("test")
-public class TestConfig {
+public class TestDataSourceConfig {
 
     private static final PostgreSQLContainer<?> postgreSQLContainer;
 
@@ -34,11 +34,6 @@ public class TestConfig {
         dataSource.setUrl(postgreSQLContainer.getJdbcUrl());
         dataSource.setUsername(postgreSQLContainer.getUsername());
         dataSource.setPassword(postgreSQLContainer.getPassword());
-
-        System.out.println("=== PostgreSQL Testcontainer Info ===");
-        System.out.println("JDBC URL: " + postgreSQLContainer.getJdbcUrl());
-        System.out.println("Username: " + postgreSQLContainer.getUsername());
-        System.out.println("Password: " + postgreSQLContainer.getPassword());
 
         return dataSource;
     }

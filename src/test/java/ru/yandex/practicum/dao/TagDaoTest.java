@@ -10,8 +10,8 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.yandex.practicum.configuration.TestConfig;
 import ru.yandex.practicum.configuration.TestDaoConfig;
+import ru.yandex.practicum.configuration.TestDataSourceConfig;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -21,7 +21,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class, TestDaoConfig.class})
+@ContextConfiguration(classes = {TestDataSourceConfig.class, TestDaoConfig.class})
 @ActiveProfiles("test")
 public class TagDaoTest {
     @Autowired
@@ -37,7 +37,7 @@ public class TagDaoTest {
     }
 
     @Test
-    void createNewTags() {
+    void createNewTagsTest() {
         tagDao.createTags(List.of("tag1", "tag2"));
 
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM tag", Integer.class);
@@ -47,28 +47,32 @@ public class TagDaoTest {
     }
 
     @Test
-    void createPostTags() {
+    void createPostTagsTest() {
         jdbcTemplate.update("INSERT INTO post(title, content) VALUES ('Пост 1','Содержимое поста 1')");
         jdbcTemplate.update("INSERT INTO tag(name) VALUES ('Тег 1')");
         jdbcTemplate.update("INSERT INTO tag(name) VALUES ('Тег 2')");
+
         tagDao.createPostTags(1L, List.of("Тег 1", "Тег 2"));
+
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM post_tags", Integer.class);
         assertEquals(2, count);
     }
 
     @Test
-    void findTagsByPostId() {
+    void findTagsByPostIdTest() {
         jdbcTemplate.update("INSERT INTO post(title, content) VALUES ('Пост 1','Содержимое поста 1')");
         jdbcTemplate.update("INSERT INTO tag(name) VALUES ('Тег 1')");
         jdbcTemplate.update("INSERT INTO tag(name) VALUES ('Тег 2')");
         jdbcTemplate.update("INSERT INTO post_tags(post_id, tag_id) VALUES (1, 1)");
         jdbcTemplate.update("INSERT INTO post_tags(post_id, tag_id) VALUES (1, 2)");
+
         List<String> postTagsIds = tagDao.findTagsByPostId(1L);
+
         assertEquals(List.of("Тег 1", "Тег 2"), postTagsIds);
     }
 
     @Test
-    void findTagsByPostIds() {
+    void findTagsByPostIdsTest() {
         jdbcTemplate.update("INSERT INTO post(title, content) VALUES ('Пост 1','Содержимое поста 1')");
         jdbcTemplate.update("INSERT INTO post(title, content) VALUES ('Пост 2','Содержимое поста 2')");
         jdbcTemplate.update("INSERT INTO tag(name) VALUES ('Тег 1')");
@@ -77,7 +81,9 @@ public class TagDaoTest {
         jdbcTemplate.update("INSERT INTO post_tags(post_id, tag_id) VALUES (1, 1)");
         jdbcTemplate.update("INSERT INTO post_tags(post_id, tag_id) VALUES (1, 2)");
         jdbcTemplate.update("INSERT INTO post_tags(post_id, tag_id) VALUES (2, 3)");
+
         Map<Long, List<String>> tagsByPostId = tagDao.findTagsByPostIds(List.of(1L, 2L));
+
         assertEquals(List.of("Тег 1", "Тег 2"), tagsByPostId.get(1L));
         assertEquals(List.of("Тег 3"), tagsByPostId.get(2L));
     }
