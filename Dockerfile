@@ -1,16 +1,19 @@
 # Этап 1: Сборка WAR файла
-FROM maven:3.9.9-amazoncorretto-21 AS build
+FROM gradle:8.5-jdk21 AS build
 
- # Устанавливаем рабочую директорию внутри контейнера
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем pom.xml и скачиваем зависимости
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# Копируем конфигурационные файлы
+COPY build.gradle .
+COPY settings.gradle .
+
+# Предварительно скачиваем зависимости для кэширования
+RUN gradle dependencies --no-daemon
 
 # Копируем исходный код и собираем проект
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN gradle clean war -x test --no-daemon
 
 # Этап 2: Запуск в Tomcat
 FROM tomcat:10-jdk21-temurin
@@ -19,7 +22,7 @@ FROM tomcat:10-jdk21-temurin
 RUN rm -rf /usr/local/tomcat/webapps/*
 
 # Копируем WAR файл
-COPY --from=build /app/target/my-blog.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/build/libs/my-blog*.war /usr/local/tomcat/webapps/ROOT.war
 
 # Открываем порт 8080
 EXPOSE 8080

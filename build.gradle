@@ -1,7 +1,8 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.3'
+    //id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'war'
 }
 
 group = 'ru.yandex.practicum'
@@ -25,16 +26,15 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //implementation 'org.springframework.boot:spring-boot-starter'
+    //testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // Spring
     implementation "org.springframework:spring-webmvc:${springVersion}"
     implementation "org.springframework:spring-jdbc:${springVersion}"
 
     // Jakarta
-    providedCompile "jakarta.servlet:jakarta.servlet-api:6.1.0"
+    compileOnly "jakarta.servlet:jakarta.servlet-api:6.1.0"
 
     // Database
     implementation "org.postgresql:postgresql:42.7.3"
@@ -52,6 +52,7 @@ dependencies {
     // Test
     testImplementation "org.springframework:spring-test:${springVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:5.13.2"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation "org.mockito:mockito-core:${mockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
 
