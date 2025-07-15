@@ -1,4 +1,4 @@
-# Этап 1: Сборка WAR файла
+# Этап 1: Сборка JAR файла
 FROM gradle:8.5-jdk21 AS build
 
 # Устанавливаем рабочую директорию внутри контейнера
@@ -13,19 +13,22 @@ RUN gradle dependencies --no-daemon
 
 # Копируем исходный код и собираем проект
 COPY src ./src
-RUN gradle clean war -x test --no-daemon
+RUN gradle clean build -x test --no-daemon
 
-# Этап 2: Запуск в Tomcat
-FROM tomcat:10-jdk21-temurin
+# Этап 2: Запуск Spring Boot приложения
+FROM openjdk:21-jdk-slim
 
-# Удаляем дефолтные приложения Tomcat
-RUN rm -rf /usr/local/tomcat/webapps/*
+# Создаем директорию для приложения
+WORKDIR /app
 
-# Копируем WAR файл
-COPY --from=build /app/build/libs/my-blog*.war /usr/local/tomcat/webapps/ROOT.war
+# Копируем JAR файл
+COPY --from=build /app/build/libs/*.jar app.jar
+
+# Создаем директорию для uploads
+RUN mkdir -p /app/uploads
 
 # Открываем порт 8080
 EXPOSE 8080
 
-# Запускаем Tomcat
-CMD ["catalina.sh", "run"]
+# Запускаем Spring Boot приложение
+CMD ["java", "-jar", "app.jar"]
