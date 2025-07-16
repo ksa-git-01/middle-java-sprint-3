@@ -1,4 +1,4 @@
-# Проектная работа 3 спринта
+# Проектная работа 3 и 4 спринтов
 
 ## Spring Web MVC приложение My Blog
 
@@ -6,10 +6,9 @@
 
 ```
 Java 21
-Spring Framework 6.2.8 (без Spring Boot)
+Spring Boot 3.5.3
 PostgreSQL 16.9
-Apache Tomcat 10
-Maven
+Gradle
 Testcontainers
 Docker & Docker Compose
 ```
@@ -18,7 +17,6 @@ Docker & Docker Compose
 
 ```
 Docker Desktop
-Maven
 JDK 21
 Клонировать репозиторий: https://github.com/ksa-git-01/middle-java-sprint-3.git
 ```
@@ -28,7 +26,7 @@ JDK 21
 Из корня проекта:
 
 ```
-mvn clean test
+./gradlew test
 ```
 
 Первый запуск может быть долгим, т.к. будут скачаны необходимые образы и зависимости
