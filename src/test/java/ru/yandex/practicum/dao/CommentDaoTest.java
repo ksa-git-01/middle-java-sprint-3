@@ -1,41 +1,47 @@
 package ru.yandex.practicum.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.yandex.practicum.configuration.TestDaoConfig;
-import ru.yandex.practicum.configuration.TestDataSourceConfig;
 import ru.yandex.practicum.model.Comment;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestDataSourceConfig.class, TestDaoConfig.class})
-@ActiveProfiles("test")
+@JdbcTest
+@Import(TestDaoConfig.class)
+@Testcontainers
+@Sql(scripts = "/test-schema.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class CommentDaoTest {
-    @Autowired
-    private DataSource dataSource;
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.9-alpine")
+            .withDatabaseName("testdb")
+            .withUsername("test")
+            .withPassword("test");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+        registry.add("spring.sql.init.mode", () -> "never");
+    }
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private CommentDao commentDao;
-
-    @BeforeEach
-    void setUpSchema() throws SQLException {
-        ScriptUtils.executeSqlScript(dataSource.getConnection(), new ClassPathResource("test-schema.sql"));
-    }
 
     @Test
     void findCommentCountByPostIdsTest() {

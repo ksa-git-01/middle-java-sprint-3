@@ -1,13 +1,11 @@
 package ru.yandex.practicum.configuration;
 
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.dao.*;
 
-@Configuration
-@Profile("test")
+@TestConfiguration
 public class TestDaoConfig {
 
     @Bean
